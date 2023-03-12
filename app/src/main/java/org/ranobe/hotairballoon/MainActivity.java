@@ -9,7 +9,6 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.View;
@@ -17,14 +16,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import org.ranobe.hotairballoon.data.WeaponData;
 import org.ranobe.hotairballoon.utils.ImageUtils;
 import org.ranobe.hotairballoon.utils.PreferenceUtils;
 import org.ranobe.hotairballoon.views.GameView;
@@ -67,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements GameView.GameList
         int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
         int colorAccent = ContextCompat.getColor(this, R.color.colorAccent);
 
-        titleView.setPaintFlags(titleView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        titleView.setPaintFlags(titleView.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
         titleView.getPaint().setShader(new LinearGradient(
                 0, 0, 0,
                 titleView.getLineHeight(),
@@ -230,15 +227,7 @@ public class MainActivity extends AppCompatActivity implements GameView.GameList
     }
 
     @Override
-    public void onWeaponUpgraded(WeaponData weapon) {
-    }
-
-    @Override
     public void onAmmoReplenished() {
-    }
-
-    @Override
-    public void onProjectileFired(WeaponData weapon) {
     }
 
     @Override

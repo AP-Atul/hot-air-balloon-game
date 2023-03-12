@@ -21,7 +21,6 @@ public class AsteroidDrawer extends DrawerData {
     List<ParticleData> particles;
     private List<AsteroidData> asteroids;
     private Bitmap asteroidBitmap;
-    private Bitmap asteroidBitmap2;
 
     private long asteroidTime;
     private float asteroidLength;
@@ -33,7 +32,6 @@ public class AsteroidDrawer extends DrawerData {
         asteroids = new ArrayList<>();
         particles = new ArrayList<>();
         asteroidBitmap = ImageUtils.gradientBitmap(ImageUtils.getVectorBitmap(context, R.drawable.ic_asteroid), colorAccent, colorPrimary);
-        asteroidBitmap2 = ImageUtils.gradientBitmap(ImageUtils.getVectorBitmap(context, R.drawable.ic_asteroid_two), colorAccent, colorPrimary);
     }
 
     /**
@@ -55,7 +53,7 @@ public class AsteroidDrawer extends DrawerData {
      */
     public void makeNew() {
         asteroidTime = System.currentTimeMillis();
-        asteroids.add(new AsteroidData(Math.round(Math.random()) == 0 ? asteroidBitmap : asteroidBitmap2));
+        asteroids.add(new AsteroidData(asteroidBitmap));
     }
 
     /**
