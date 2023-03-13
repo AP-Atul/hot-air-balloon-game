@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
+
+    <org.ranobe.hotairballoon.views.GameView
+        android:id="@+id/game"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:id="@+id/controls"
@@ -16,25 +21,19 @@
             android:id="@+id/stop"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            app:tint="@color/colorPrimary"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_stop"
-            android:scaleType="centerInside" />
+            app:tint="@color/colorPrimary" />
 
         <ImageView
             android:id="@+id/pause"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            app:tint="@color/colorPrimary"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_pause"
-            android:scaleType="centerInside"/>
+            app:tint="@color/colorPrimary" />
 
     </LinearLayout>
-
-    <org.ranobe.hotairballoon.views.GameView
-        android:id="@+id/game"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/controls"/>
 
     <TextView
         android:id="@+id/title"

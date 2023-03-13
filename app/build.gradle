@@ -5,6 +5,7 @@ plugins {
 android {
     namespace 'org.ranobe.hotairballoon'
     compileSdk 33
+    packagingOptions.exclude '**/*.kotlin_*'
 
     defaultConfig {
         applicationId "org.ranobe.hotairballoon"
@@ -31,6 +32,4 @@ android {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }

@@ -4,7 +4,6 @@ package org.ranobe.hotairballoon;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
@@ -22,7 +20,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import org.ranobe.hotairballoon.utils.ImageUtils;
 import org.ranobe.hotairballoon.utils.PreferenceUtils;
 import org.ranobe.hotairballoon.views.GameView;
 
@@ -87,21 +84,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 gameView.onPause();
             } else {
                 pauseView.setImageResource(R.drawable.ic_pause);
-                pauseView.setAlpha(1f);
-                stopView.setVisibility(View.GONE);
                 gameView.play();
             }
         });
 
-        stopView.setOnClickListener(view -> {
-            if (isPaused) {
-                pauseView.setImageResource(R.drawable.ic_pause);
-                pauseView.setAlpha(1f);
-                gameView.onResume();
-                isPaused = false;
-            }
-            gameView.stop();
-        });
+        stopView.setOnClickListener(v -> gameView.stop());
 
         int highScore = prefs.getInt(PreferenceUtils.PREF_HIGH_SCORE, 0);
         if (highScore > 0)

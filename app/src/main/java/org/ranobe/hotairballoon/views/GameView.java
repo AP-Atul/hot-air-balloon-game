@@ -6,33 +6,28 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-import org.ranobe.hotairballoon.entity.Balloon;
-import org.ranobe.hotairballoon.GameLoop;
 import org.ranobe.hotairballoon.R;
-import org.ranobe.hotairballoon.data.Wall;
-import org.ranobe.hotairballoon.data.drawer.AsteroidDrawer;
+import org.ranobe.hotairballoon.entity.Balloon;
+import org.ranobe.hotairballoon.entity.Wall;
+import org.ranobe.hotairballoon.generator.WallsGenerator;
+import org.ranobe.hotairballoon.utils.GameLoop;
 
-public class GameView extends SurfaceView implements SurfaceHolder.Callback, View.OnTouchListener {
-
-    private final GameLoop gameLoop;
+public class GameView extends SurfaceView implements View.OnTouchListener {
     private final Balloon balloon;
-    private final AsteroidDrawer asteroids;
+    private final WallsGenerator wallsGenerator;
     public int score;
+    private GameLoop gameLoop;
     private float touchStartPositionX;
     private float touchStartPositionY;
-    private float speed = 3;
+    private float speed = 1;
 
     public GameView(Context context) {
         this(context, null);
@@ -49,9 +44,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Vie
         int colorAccent = ContextCompat.getColor(getContext(), R.color.colorAccent);
 
         gameLoop = new GameLoop(getHolder(), this);
-        getHolder().addCallback(this);
-
         balloon = new Balloon(context, colorAccent, colorPrimary);
+        balloon.setInitialPosition(getWidth() / 2F, getHeight() - 50);
 
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
@@ -63,75 +57,53 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Vie
         accentPaint.setStyle(Paint.Style.FILL);
         accentPaint.setAntiAlias(true);
 
-        asteroids = new AsteroidDrawer(getContext(), colorAccent, colorPrimary, paint, accentPaint);
+        wallsGenerator = new WallsGenerator(getContext(), paint, accentPaint);
+        wallsGenerator.setMakeWalls(true);
     }
 
     public void onUpdate(Canvas canvas) {
         canvas.drawColor(Color.WHITE);
 
-        if (asteroids.size() == 0) {
-            asteroids.makeNew();
-        }
-
-        asteroids.draw(canvas, speed);
         balloon.draw(canvas);
+        boolean isPassed = wallsGenerator.draw(canvas, speed);
 
-        // collision detection
-        float left = balloon.left();
-        float top = balloon.top();
-        int width = balloon.getWidth();
-        Rect position = new Rect(
-                (int) left - (width / 2),
-                (int) top - (width / 2),
-                (int) left + (width / 2),
-                (int) top + (width / 2)
-        );
-
-        Wall asteroid = asteroids.asteroidAt(position);
-        if (asteroid != null) {
-            new Handler(Looper.getMainLooper()).post(() -> {
-//                        listener.onAsteroidCrashed();
-//                        listener.onStop(score);
-//                    stop();
-            });
+        if (isPassed) {
+            speed += 0.2;
+            score += 1;
         }
-    }
 
-    @Override
-    public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-        gameLoop.start(true);
-    }
-
-    @Override
-    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        // Unused
-    }
-
-    @Override
-    public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
-        gameLoop.start(false);
+        Rect position = balloon.getPosition();
+        Wall collision = wallsGenerator.wallCollisionDetection(position);
+        if (collision != null) {
+            // bro we lose;
+            score = 0;
+        }
     }
 
     public void play() {
-        score = 0;
-        speed = 5;
-        balloon.setInitialPosition(getWidth() / 2F, getHeight() - 50);
-
         setOnTouchListener(this);
-        gameLoop.start(true);
-        gameLoop.start();
+        wallsGenerator.setMakeWalls(true);
+
+        if (gameLoop == null) {
+            gameLoop = new GameLoop(getHolder(), this);
+        }
+
+        if (!gameLoop.isRunning()) {
+            balloon.setInitialPosition(getWidth() / 2F, getHeight() - 50);
+            gameLoop.start(true);
+        } else {
+            gameLoop.unpause();
+        }
     }
 
     public void stop() {
         setOnTouchListener(null);
-        asteroids.setMakeAsteroids(false);
+        wallsGenerator.setMakeWalls(false);
 
         ValueAnimator animator = ValueAnimator.ofFloat(balloon.y, getHeight() - 100F);
         animator.setDuration(1000);
         animator.setInterpolator(new DecelerateInterpolator());
-        animator.addUpdateListener(valueAnimator -> {
-            balloon.y = (float) valueAnimator.getAnimatedValue();
-        });
+        animator.addUpdateListener(valueAnimator -> balloon.y = (float) valueAnimator.getAnimatedValue());
         animator.start();
 
         ValueAnimator animator1 = ValueAnimator.ofFloat(speed, 1);
@@ -139,20 +111,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Vie
         animator1.setInterpolator(new DecelerateInterpolator());
         animator1.addUpdateListener(valueAnimator -> speed = (float) valueAnimator.getAnimatedValue());
         animator1.start();
-    }
 
-    public boolean isPlaying() {
-        return gameLoop.isRunning();
+        if (gameLoop != null) {
+            gameLoop.end();
+            gameLoop = null;
+        }
     }
 
     public void onPause() {
         if (gameLoop != null && gameLoop.isRunning()) {
-            gameLoop.start(false);
+            gameLoop.pause();
         }
     }
 
     public void onResume() {
-        onPause();
+        if (gameLoop != null && gameLoop.isRunning()) {
+            gameLoop.unpause();
+        }
     }
 
     public boolean isOutOfGameView(float x, float y) {
