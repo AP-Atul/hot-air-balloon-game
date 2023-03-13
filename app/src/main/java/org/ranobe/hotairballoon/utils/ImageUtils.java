@@ -19,9 +19,6 @@ public class ImageUtils {
 
     public static Bitmap getVectorBitmap(Context context, @DrawableRes int id) {
         Drawable drawable = VectorDrawableCompat.create(context.getResources(), id, context.getTheme());
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-            drawable = (DrawableCompat.wrap(drawable)).mutate();
-
         Bitmap result = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());

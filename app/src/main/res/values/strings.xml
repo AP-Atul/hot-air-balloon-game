@@ -2,9 +2,6 @@
     <string name="app_name">hot-air-balloon</string>
 
     <string name="score_high">High Score: %d</string>
-    <string name="msg_out_of_ammo">Out of ammo :(</string>
-    <string name="msg_hold_distance">Hold your finger down longer to move the ship across a greater distance.</string>
-    <string name="msg_dont_get_hit">Don\'t get hit by the asteroids!</string>
     <string name="title_animation_speed">Animation Speed</string>
     <string name="desc_animation_speed">It appears that your phone\'s animator duration has been modified in developer settings.
         It is highly recommended that you revert this setting to its original value in order for the game to run properly.</string>

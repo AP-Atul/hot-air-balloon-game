@@ -27,7 +27,7 @@ import org.ranobe.hotairballoon.utils.PreferenceUtils;
 import org.ranobe.hotairballoon.views.GameView;
 
 
-public class MainActivity extends AppCompatActivity implements GameView.GameListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView titleView;
     private TextView highScoreView;
@@ -41,14 +41,11 @@ public class MainActivity extends AppCompatActivity implements GameView.GameList
     private SharedPreferences prefs;
 
     private boolean isPaused;
-    private Bitmap play;
-    private Bitmap pause;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
@@ -83,36 +80,26 @@ public class MainActivity extends AppCompatActivity implements GameView.GameList
 
         appName = getString(R.string.app_name);
 
-        play = ImageUtils.gradientBitmap(ImageUtils.getVectorBitmap(this, R.drawable.ic_play), colorAccent, colorPrimary);
-        pause = ImageUtils.gradientBitmap(ImageUtils.getVectorBitmap(this, R.drawable.ic_pause), colorAccent, colorPrimary);
-        Bitmap stop = ImageUtils.gradientBitmap(ImageUtils.getVectorBitmap(this, R.drawable.ic_stop), colorAccent, colorPrimary);
-
-        pauseView.setImageBitmap(pause);
         pauseView.setOnClickListener(view -> {
             isPaused = !isPaused;
             if (isPaused) {
-                pauseView.setImageBitmap(play);
-                if (!gameView.isTutorial())
-                    stopView.setVisibility(View.VISIBLE);
+                pauseView.setImageResource(R.drawable.ic_play);
                 gameView.onPause();
             } else {
-                pauseView.setImageBitmap(pause);
+                pauseView.setImageResource(R.drawable.ic_pause);
                 pauseView.setAlpha(1f);
                 stopView.setVisibility(View.GONE);
-                gameView.onResume();
+                gameView.play();
             }
         });
 
-        stopView.setImageBitmap(stop);
         stopView.setOnClickListener(view -> {
             if (isPaused) {
-                pauseView.setImageBitmap(pause);
+                pauseView.setImageResource(R.drawable.ic_pause);
                 pauseView.setAlpha(1f);
                 gameView.onResume();
                 isPaused = false;
             }
-
-            onStop(gameView.score);
             gameView.stop();
         });
 
@@ -120,8 +107,6 @@ public class MainActivity extends AppCompatActivity implements GameView.GameList
         if (highScore > 0)
             highScoreView.setText(String.format(getString(R.string.score_high), highScore));
 
-
-        gameView.setListener(this);
         gameView.setOnClickListener(this);
         animateTitle(true);
     }
@@ -137,14 +122,6 @@ public class MainActivity extends AppCompatActivity implements GameView.GameList
             titleView.setText(appName.substring(0, (int) ((float) valueAnimator.getAnimatedValue() * appName.length())));
         });
         animator.start();
-
-        if (isVisible) {
-            pauseView.setVisibility(View.GONE);
-            stopView.setVisibility(View.GONE);
-        } else {
-            pauseView.setVisibility(View.VISIBLE);
-            stopView.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -183,71 +160,9 @@ public class MainActivity extends AppCompatActivity implements GameView.GameList
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onStart(boolean isTutorial) {
-    }
-
-    @Override
-    public void onTutorialFinish() {
-        prefs.edit().putBoolean(PreferenceUtils.PREF_TUTORIAL, false).apply();
-    }
-
-    @Override
-    public void onStop(int score) {
-        animateTitle(true);
-        gameView.setOnClickListener(this);
-
-        int highScore = prefs.getInt(PreferenceUtils.PREF_HIGH_SCORE, 0);
-        if (score > highScore) {
-            //TODO: awesome high score animation or something
-            highScore = score;
-            prefs.edit().putInt(PreferenceUtils.PREF_HIGH_SCORE, score).apply();
-
-        }
-
-        highScoreView.setText(String.format(getString(R.string.score_high), highScore));
-
-    }
-
-    @Override
-    public void onAsteroidPassed() {
-    }
-
-    @Override
-    public void onAsteroidCrashed() {
-    }
-
-    @Override
-    public void onAmmoReplenished() {
-    }
-
-    @Override
-    public void onOutOfAmmo() {
-    }
-
-    @Override
-    public void onAsteroidHit(int score) {
-        titleView.setText(String.valueOf(score));
-    }
-
-    @Override
     public void onClick(View view) {
-        if (!gameView.isPlaying() && (animator == null || !animator.isStarted())) {
-            gameView.setOnClickListener(null);
-
-            gameView.play(prefs.getBoolean(PreferenceUtils.PREF_TUTORIAL, true));
-
-            animateTitle(false);
-        }
+        titleView.setVisibility(View.GONE);
+        gameView.setOnClickListener(null);
+        gameView.play();
     }
-
 }

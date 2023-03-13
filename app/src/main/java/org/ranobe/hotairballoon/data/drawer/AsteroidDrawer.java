@@ -8,7 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 import org.ranobe.hotairballoon.R;
-import org.ranobe.hotairballoon.data.AsteroidData;
+import org.ranobe.hotairballoon.data.Wall;
 import org.ranobe.hotairballoon.data.DrawerData;
 import org.ranobe.hotairballoon.data.ParticleData;
 import org.ranobe.hotairballoon.utils.ImageUtils;
@@ -19,8 +19,8 @@ import java.util.List;
 public class AsteroidDrawer extends DrawerData {
 
     List<ParticleData> particles;
-    private List<AsteroidData> asteroids;
-    private Bitmap asteroidBitmap;
+    private final List<Wall> walls;
+    private final Bitmap wallBitmap;
 
     private long asteroidTime;
     private float asteroidLength;
@@ -29,9 +29,9 @@ public class AsteroidDrawer extends DrawerData {
 
     public AsteroidDrawer(Context context, int colorAccent, int colorPrimary, Paint asteroidPaint, Paint particlePaint) {
         super(asteroidPaint, particlePaint);
-        asteroids = new ArrayList<>();
+        walls = new ArrayList<>();
         particles = new ArrayList<>();
-        asteroidBitmap = ImageUtils.gradientBitmap(ImageUtils.getVectorBitmap(context, R.drawable.ic_asteroid), colorAccent, colorPrimary);
+        wallBitmap = ImageUtils.gradientBitmap(ImageUtils.getVectorBitmap(context, R.drawable.ic_wall), colorAccent, colorPrimary);
     }
 
     /**
@@ -45,7 +45,7 @@ public class AsteroidDrawer extends DrawerData {
         this.shouldMakeAsteroids = shouldMakeAsteroids;
         asteroidLength = 3000;
         if (shouldMakeAsteroids)
-            asteroids.clear();
+            walls.clear();
     }
 
     /**
@@ -53,14 +53,14 @@ public class AsteroidDrawer extends DrawerData {
      */
     public void makeNew() {
         asteroidTime = System.currentTimeMillis();
-        asteroids.add(new AsteroidData(asteroidBitmap));
+        walls.add(new Wall(wallBitmap));
     }
 
     /**
      * @return The amount of asteroids currently visible on the screen.
      */
     public int size() {
-        return asteroids.size();
+        return walls.size();
     }
 
     /**
@@ -68,11 +68,11 @@ public class AsteroidDrawer extends DrawerData {
      * on the canvas; if so, return it.
      *
      * @param position The position Rect to check if an asteroid intersects.
-     * @return The AsteroidData if it intersects the given position;
+     * @return The Wall if it intersects the given position;
      * null if there is nothing there.
      */
-    public AsteroidData asteroidAt(Rect position) {
-        for (AsteroidData asteroid : asteroids) {
+    public Wall asteroidAt(Rect position) {
+        for (Wall asteroid : walls) {
             if (asteroid.position != null && position.intersect(asteroid.position))
                 return asteroid;
         }
@@ -86,8 +86,8 @@ public class AsteroidDrawer extends DrawerData {
      * @param asteroid The asteroid to obliterate. Kaboom! Kablowie! Kapow!
      *                 Badabadoosh!
      */
-    public void destroy(AsteroidData asteroid) {
-        asteroids.remove(asteroid);
+    public void destroy(Wall asteroid) {
+        walls.remove(asteroid);
 
         for (int i = 0; i < 50; i++) {
             particles.add(new ParticleData(paint(1), asteroid.x, asteroid.y));
@@ -98,13 +98,13 @@ public class AsteroidDrawer extends DrawerData {
     public boolean draw(Canvas canvas, float speed) {
         boolean isPassed = false;
 
-        for (AsteroidData asteroid : new ArrayList<>(asteroids)) {
+        for (Wall asteroid : new ArrayList<>(walls)) {
             Matrix matrix = asteroid.next(speed, canvas.getWidth(), canvas.getHeight());
             if (matrix != null) {
                 canvas.drawBitmap(asteroid.asteroidBitmap, matrix, paint(0));
             } else {
                 isPassed = true;
-                asteroids.remove(asteroid);
+                walls.remove(asteroid);
                 if (asteroidLength > 750)
                     asteroidLength -= (asteroidLength * 0.1);
             }
