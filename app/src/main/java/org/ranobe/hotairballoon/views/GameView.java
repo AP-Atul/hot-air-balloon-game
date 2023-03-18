@@ -26,6 +26,7 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
     private GameLoop gameLoop;
     private float touchStartPositionX;
     private float speed = 5;
+    private final Paint debugPaint;
 
     public GameView(Context context) {
         this(context, null);
@@ -46,7 +47,13 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
 
-        wallsGenerator = new WallsGenerator(getContext(), paint);
+        debugPaint = new Paint();
+        debugPaint.setColor(Color.RED);
+        debugPaint.setStyle(Paint.Style.STROKE);
+        debugPaint.setStrokeWidth(2);
+        debugPaint.setAntiAlias(true);
+
+        wallsGenerator = new WallsGenerator(getContext(), paint, debugPaint);
         wallsGenerator.setMakeWalls(true);
     }
 
@@ -62,12 +69,14 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
             score += 1;
         }
 
-        balloon.draw(canvas);
         Rect position = balloon.getPosition();
+        canvas.drawRect(position, debugPaint);
         Wall collision = wallsGenerator.wallCollisionDetection(position);
         if (collision != null) {
             new Handler(Looper.getMainLooper()).post(() -> listener.died());
         }
+
+        balloon.draw(canvas);
     }
 
     public void play() {

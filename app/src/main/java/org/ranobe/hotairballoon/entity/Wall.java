@@ -1,43 +1,58 @@
 package org.ranobe.hotairballoon.entity;
 
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
+import android.graphics.Canvas;
 import android.graphics.Rect;
+
+import org.ranobe.hotairballoon.utils.MathUtils;
 
 public class Wall {
     public Bitmap wallBitmap;
     public float x, y, yDiff;
     public Rect position;
 
-    public Wall(Bitmap wallBitmap) {
-        this.wallBitmap = Bitmap.createScaledBitmap(wallBitmap, getRandom(), 30, false);
-        x = (float) Math.random();
+    public Wall(Bitmap wallBitmap, int windowWidth) {
+        int width = (int) MathUtils.getRandom(
+                MathUtils.getXPercentOf(windowWidth, 10),
+                MathUtils.getXPercentOf(windowWidth, 70)
+        );
+        this.wallBitmap = Bitmap.createScaledBitmap(wallBitmap, width, 30, false);
+        x = MathUtils.getRandom(0, windowWidth);
         y = 0;
         yDiff = 3.2F;
+        position = new Rect(left(), top(), right(), bottom());
     }
 
-    public int getRandom() {
-        int min = 100;
-        int max = 500;
-        return (int) (min + Math.random() * (max - min));
+    public int getWidth() {
+        return wallBitmap.getWidth();
     }
 
-    public Matrix next(float speed, int width, int height) {
-        if ((y - wallBitmap.getHeight()) < height) {
+    public int getHeight() {
+        return wallBitmap.getHeight();
+    }
+
+    public int left() {
+        return (int) (x - (getWidth() / 2F));
+    }
+
+    public int top() {
+        return (int) (y - (getHeight() / 2F));
+    }
+
+    public int right() {
+        return (int) (x + getWidth() / 2F);
+    }
+
+    public int bottom() {
+        return (int) (y + getHeight() / 2F);
+    }
+
+    public Rect next(float speed, Canvas canvas) {
+        if ((y - wallBitmap.getHeight()) < canvas.getHeight()) {
             y += yDiff * speed;
-        } else return null;
-
-        float left = x * width, top = y;
-        position = new Rect(
-                (int) left - (wallBitmap.getWidth() / 2),
-                (int) top - (wallBitmap.getHeight() / 2),
-                (int) left + (wallBitmap.getWidth() / 2),
-                (int) top + (wallBitmap.getHeight() / 2)
-        );
-
-        Matrix matrix = new Matrix();
-        matrix.postTranslate(left, top);
-        return matrix;
+        }
+        position = new Rect(left(), top(), right(), bottom());
+        return position;
     }
 
 }

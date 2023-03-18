@@ -4,6 +4,7 @@ package org.ranobe.hotairballoon;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void died() {
+        Toast.makeText(getApplicationContext(), "Game Over", Toast.LENGTH_LONG).show();
         isPlaying = false;
         gameView.stop();
         gameView.setVisibility(View.INVISIBLE);

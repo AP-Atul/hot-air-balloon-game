@@ -37,15 +37,7 @@ public class Balloon {
     }
 
     public Rect getPosition() {
-        float left = left();
-        float top = top();
-        int width = getWidth();
-        return new Rect(
-                (int) left - (width / 2),
-                (int) top - (width / 2),
-                (int) left + (width / 2),
-                (int) top + (width / 2)
-        );
+        return new Rect(left(), top(), right(), bottom());
     }
 
     public int getWidth() {
@@ -56,11 +48,19 @@ public class Balloon {
         return balloonBitmap.getHeight();
     }
 
-    public float left() {
-        return x - (balloonBitmap.getWidth() / 2F);
+    public int left() {
+        return (int) (x - (getWidth() / 2F));
     }
 
-    public float top() {
-        return y - (balloonBitmap.getHeight() / 2F);
+    public int top() {
+        return (int) (y - (getHeight() / 2F));
+    }
+
+    public int right() {
+        return (int) (x + getWidth() /2F);
+    }
+
+    public int bottom() {
+        return (int) (y + getHeight() / 2F);
     }
 }
