@@ -6,7 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
+import org.ranobe.hotairballoon.C;
 import org.ranobe.hotairballoon.R;
 import org.ranobe.hotairballoon.data.DrawerData;
 import org.ranobe.hotairballoon.entity.Wall;
@@ -24,15 +26,15 @@ public class WallsGenerator extends DrawerData {
 
     private boolean shouldMakeWalls;
 
-    public WallsGenerator(Context context, Paint asteroidPaint, Paint particlePaint) {
-        super(asteroidPaint, particlePaint);
+    public WallsGenerator(Context context, Paint blackPaint) {
+        super(blackPaint);
         walls = new ArrayList<>();
         wallBitmap = ImageUtils.getVectorBitmap(context, R.drawable.ic_wall);
     }
 
     public void setMakeWalls(boolean shouldMakeAsteroids) {
         this.shouldMakeWalls = shouldMakeAsteroids;
-        generationLength = 3000;
+        generationLength = 6000;
         if (shouldMakeAsteroids)
             walls.clear();
     }
@@ -68,7 +70,8 @@ public class WallsGenerator extends DrawerData {
             }
         }
 
-        if (shouldMakeWalls && System.currentTimeMillis() - generationTime > generationLength) {
+        float time = (System.currentTimeMillis() - generationTime) * speed;
+        if (shouldMakeWalls && time > generationLength) {
             makeNew();
         }
 

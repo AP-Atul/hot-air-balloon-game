@@ -43,17 +43,31 @@ public class GameLoop extends Thread {
 
     @Override
     public void run() {
+        long previousTime = System.currentTimeMillis();
+        long fps = 60;
         while (isRunning) {
-            while (isPlaying) {
-                if (!surfaceHolder.getSurface().isValid()) return;
-                Canvas canvas = surfaceHolder.lockCanvas();
-                if (canvas == null) return;
 
+            long currentTimeMillis = System.currentTimeMillis();
+            long elapsedTimeMs = currentTimeMillis - previousTime;
+            long sleepTimeMs = (long) (1000f/ fps - elapsedTimeMs);
+            Canvas canvas = null;
+
+            while (isPlaying) {
                 try {
-                    gameView.onUpdate(canvas);
+                if (!surfaceHolder.getSurface().isValid()) return;
+                canvas = surfaceHolder.lockCanvas();
+                if (canvas == null) {
+                    Thread.sleep(1);
+                    continue;
+                } else if (sleepTimeMs > 0) {
+                    Thread.sleep(sleepTimeMs);
+                }
+
+                gameView.onUpdate(canvas);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
+                    previousTime = System.currentTimeMillis();
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
             }

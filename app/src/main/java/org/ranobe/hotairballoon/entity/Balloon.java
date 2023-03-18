@@ -17,12 +17,8 @@ public class Balloon {
     public float x;
     public float y;
 
-    public Balloon(Context context, int colorAccent, int colorPrimary) {
-        balloonBitmap = ImageUtils.gradientBitmap(
-                ImageUtils.getVectorBitmap(context, R.drawable.ic_ship),
-                colorAccent,
-                colorPrimary
-        );
+    public Balloon(Context context) {
+        balloonBitmap = ImageUtils.getVectorBitmap(context, R.drawable.ic_balloon);
         paint = new Paint();
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.FILL);
