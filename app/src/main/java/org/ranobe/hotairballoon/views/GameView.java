@@ -37,10 +37,6 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
 
     public GameView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        int colorPrimaryLight = ContextCompat.getColor(getContext(), R.color.colorPrimaryLight);
-        int colorPrimary = ContextCompat.getColor(getContext(), R.color.colorPrimary);
-        int colorAccent = ContextCompat.getColor(getContext(), R.color.colorAccent);
-
         gameLoop = new GameLoop(getHolder(), this);
         balloon = new Balloon(context);
         balloon.setInitialPosition(getWidth() / 2F, getHeight() - 50);

@@ -10,7 +10,7 @@ public class Wall {
     public Rect position;
 
     public Wall(Bitmap wallBitmap) {
-        this.wallBitmap = Bitmap.createScaledBitmap(wallBitmap, getRandom(), 50, false);
+        this.wallBitmap = Bitmap.createScaledBitmap(wallBitmap, getRandom(), 30, false);
         x = (float) Math.random();
         y = 0;
         yDiff = 3.2F;
