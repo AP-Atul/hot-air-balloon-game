@@ -6,8 +6,8 @@ import android.view.SurfaceHolder;
 import org.ranobe.hotairballoon.views.GameView;
 
 public class GameLoop extends Thread {
-    private final SurfaceHolder surfaceHolder;
-    private final GameView gameView;
+    private SurfaceHolder surfaceHolder;
+    private GameView gameView;
     private boolean isRunning = false;
     private boolean isPlaying = false;
 
@@ -27,6 +27,8 @@ public class GameLoop extends Thread {
     public void end() {
         isPlaying = false;
         isRunning = false;
+        surfaceHolder = null;
+        gameView = null;
     }
 
     public void pause() {
@@ -45,6 +47,7 @@ public class GameLoop extends Thread {
     public void run() {
         while (isRunning) {
             while (isPlaying) {
+                if(surfaceHolder == null) return;
                 if (!surfaceHolder.getSurface().isValid()) return;
                 Canvas canvas = surfaceHolder.lockCanvas();
                 if (canvas == null) return;
@@ -54,7 +57,9 @@ public class GameLoop extends Thread {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    surfaceHolder.unlockCanvasAndPost(canvas);
+                    if(surfaceHolder != null) {
+                        surfaceHolder.unlockCanvasAndPost(canvas);
+                    }
                 }
             }
         }

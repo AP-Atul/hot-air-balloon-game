@@ -5,14 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 
-import androidx.core.content.ContextCompat;
-
-import org.ranobe.hotairballoon.R;
 import org.ranobe.hotairballoon.entity.Balloon;
 import org.ranobe.hotairballoon.entity.Wall;
 import org.ranobe.hotairballoon.generator.WallsGenerator;
@@ -22,6 +21,7 @@ import org.ranobe.hotairballoon.utils.MathUtils;
 public class GameView extends SurfaceView implements View.OnTouchListener {
     private final Balloon balloon;
     private final WallsGenerator wallsGenerator;
+    private GameListener listener;
     public int score;
     private GameLoop gameLoop;
     private float touchStartPositionX;
@@ -50,22 +50,23 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
         wallsGenerator.setMakeWalls(true);
     }
 
+    public void setListener(GameListener listener) {
+        this.listener = listener;
+    }
+
     public void onUpdate(Canvas canvas) {
         canvas.drawColor(Color.WHITE);
-
-        balloon.draw(canvas);
         boolean isPassed = wallsGenerator.draw(canvas, speed);
-
         if (isPassed) {
             speed += 0.01;
             score += 1;
         }
 
+        balloon.draw(canvas);
         Rect position = balloon.getPosition();
         Wall collision = wallsGenerator.wallCollisionDetection(position);
         if (collision != null) {
-            // bro we lose;
-            score = 0;
+            new Handler(Looper.getMainLooper()).post(() -> listener.died());
         }
     }
 
@@ -132,4 +133,7 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
         return true;
     }
 
+    public interface GameListener {
+        void died();
+    }
 }

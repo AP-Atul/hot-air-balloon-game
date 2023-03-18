@@ -5,6 +5,9 @@
     <string name="title_animation_speed">Animation Speed</string>
     <string name="desc_animation_speed">It appears that your phone\'s animator duration has been modified in developer settings.
         It is highly recommended that you revert this setting to its original value in order for the game to run properly.</string>
+    <string name="play">Play</string>
+    <string name="quit">Quit</string>
+    <string name="hot_air_balloon">Hot air balloon</string>
 
 
 </resources>
