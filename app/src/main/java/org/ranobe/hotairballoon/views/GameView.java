@@ -12,6 +12,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 
+import androidx.core.content.ContextCompat;
+
+import org.ranobe.hotairballoon.R;
 import org.ranobe.hotairballoon.entity.Balloon;
 import org.ranobe.hotairballoon.entity.Wall;
 import org.ranobe.hotairballoon.generator.WallsGenerator;
@@ -27,6 +30,7 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
     private float touchStartPositionX;
     private float speed = 5;
     private final Paint debugPaint;
+    private final int backgroundColor;
 
     public GameView(Context context) {
         this(context, null);
@@ -41,9 +45,10 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
         gameLoop = new GameLoop(getHolder(), this);
         balloon = new Balloon(context);
         balloon.setInitialPosition(getWidth() / 2F, getHeight() - 50);
+        backgroundColor = ContextCompat.getColor(context, R.color.background);
 
         Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
+        paint.setColor(Color.GRAY);
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
 
@@ -62,7 +67,7 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
     }
 
     public void onUpdate(Canvas canvas) {
-        canvas.drawColor(Color.WHITE);
+        canvas.drawColor(backgroundColor);
         boolean isPassed = wallsGenerator.draw(canvas, speed);
         if (isPassed) {
             speed += 0.01;

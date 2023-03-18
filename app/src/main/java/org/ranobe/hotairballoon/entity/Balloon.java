@@ -20,7 +20,7 @@ public class Balloon {
     public Balloon(Context context) {
         balloonBitmap = ImageUtils.getVectorBitmap(context, R.drawable.ic_balloon);
         paint = new Paint();
-        paint.setColor(Color.WHITE);
+        paint.setColor(Color.GRAY);
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
     }

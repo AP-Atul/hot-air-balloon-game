@@ -12,11 +12,12 @@ public class Wall {
     public Rect position;
 
     public Wall(Bitmap wallBitmap, int windowWidth) {
-        int width = (int) MathUtils.getRandom(
-                MathUtils.getXPercentOf(windowWidth, 10),
-                MathUtils.getXPercentOf(windowWidth, 70)
-        );
-        this.wallBitmap = Bitmap.createScaledBitmap(wallBitmap, width, 30, false);
+//        int width = (int) MathUtils.getRandom(
+//                MathUtils.getXPercentOf(windowWidth, 10),
+//                MathUtils.getXPercentOf(windowWidth, 70)
+//        );
+//        this.wallBitmap = Bitmap.createScaledBitmap(wallBitmap, width, 50, false);
+        this.wallBitmap = wallBitmap;
         x = MathUtils.getRandom(0, windowWidth);
         y = 0;
         yDiff = 3.2F;

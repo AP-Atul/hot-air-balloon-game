@@ -10,13 +10,14 @@ import org.ranobe.hotairballoon.R;
 import org.ranobe.hotairballoon.data.DrawerData;
 import org.ranobe.hotairballoon.entity.Wall;
 import org.ranobe.hotairballoon.utils.ImageUtils;
+import org.ranobe.hotairballoon.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WallsGenerator extends DrawerData {
     private final List<Wall> walls;
-    private final Bitmap wallBitmap;
+    private final List<Bitmap> wallBitmaps;
     private final Paint debugPaint;
 
     private long generationTime;
@@ -28,7 +29,20 @@ public class WallsGenerator extends DrawerData {
         super(blackPaint);
         this.debugPaint = debugPaint;
         walls = new ArrayList<>();
-        wallBitmap = ImageUtils.getVectorBitmap(context, R.drawable.ic_wall);
+        wallBitmaps = new ArrayList<>();
+
+        List<Integer> bitmaps = new ArrayList<Integer>() {{
+            add(R.drawable.ic_wall_big);
+            add(R.drawable.ic_wall_big);
+        }};
+        for(int resource: bitmaps) {
+            wallBitmaps.add(ImageUtils.getVectorBitmap(context, resource));
+        }
+    }
+
+    public Bitmap getRandomBitmap() {
+        int random = (int) MathUtils.getRandom(0, 1);
+        return wallBitmaps.get(random);
     }
 
     public void setMakeWalls(boolean shouldMakeAsteroids) {
@@ -40,7 +54,7 @@ public class WallsGenerator extends DrawerData {
 
     public void makeNew(int width) {
         generationTime = System.currentTimeMillis();
-        walls.add(new Wall(wallBitmap, width));
+        walls.add(new Wall(getRandomBitmap(), width));
     }
 
     public Wall wallCollisionDetection(Rect position) {
