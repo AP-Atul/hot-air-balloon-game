@@ -8,4 +8,8 @@ public class MathUtils {
     public static float getRandom(float min, float max) {
         return (float) (min + Math.random() * (max - min));
     }
+
+    public static boolean getXChance(float percent) {
+        return Math.random() < getXPercentOf(100, percent);
+    }
 }
