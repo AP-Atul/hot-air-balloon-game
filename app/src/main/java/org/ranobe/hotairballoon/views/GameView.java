@@ -94,10 +94,9 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
 
         if (!gameLoop.isRunning()) {
             balloon.setInitialPosition(getWidth() / 2F, MathUtils.getXPercentOf(getHeight(), 80));
-            gameLoop.start(true);
-        } else {
-            gameLoop.unpause();
         }
+
+        gameLoop.startLoop();
     }
 
     public void stop() {
@@ -105,20 +104,20 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
         wallsGenerator.setMakeWalls(false);
 
         if (gameLoop != null) {
-            gameLoop.end();
+            gameLoop.stopLoop();
             gameLoop = null;
         }
     }
 
     public void onPause() {
         if (gameLoop != null && gameLoop.isRunning()) {
-            gameLoop.pause();
+            gameLoop.stopLoop();
         }
     }
 
     public void onResume() {
         if (gameLoop != null && gameLoop.isRunning()) {
-            gameLoop.unpause();
+            gameLoop.stopLoop();
         }
     }
 
