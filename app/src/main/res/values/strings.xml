@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">hot-air-balloon</string>
+
+    <string name="play">Play</string>
+    <string name="quit">Quit</string>
+    <string name="hot_air_balloon">Hot air balloon</string>
+
+
+</resources>
