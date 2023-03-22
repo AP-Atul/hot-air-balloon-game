@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 
 import org.ranobe.hotairballoon.R;
 import org.ranobe.hotairballoon.entity.Balloon;
+import org.ranobe.hotairballoon.entity.Performance;
 import org.ranobe.hotairballoon.entity.Wall;
 import org.ranobe.hotairballoon.generator.WallsGenerator;
 import org.ranobe.hotairballoon.utils.GameLoop;
@@ -27,9 +28,11 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
     private GameListener listener;
     public int score;
     private GameLoop gameLoop;
+    private final Performance performance;
     private float touchStartPositionX;
     private float speed = 5;
     private final Paint debugPaint;
+    private final Paint paint;
     private final int backgroundColor;
 
     public GameView(Context context) {
@@ -47,9 +50,10 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
         balloon.setInitialPosition(getWidth() / 2F, getHeight() - 50);
         backgroundColor = ContextCompat.getColor(context, R.color.background);
 
-        Paint paint = new Paint();
+        paint = new Paint();
         paint.setColor(Color.GRAY);
         paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(50);
         paint.setAntiAlias(true);
 
         debugPaint = new Paint();
@@ -58,6 +62,7 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
         debugPaint.setStrokeWidth(2);
         debugPaint.setAntiAlias(true);
 
+        performance = new Performance(getContext(), gameLoop);
         wallsGenerator = new WallsGenerator(getContext(), paint, debugPaint);
         wallsGenerator.setMakeWalls(true);
     }
@@ -68,13 +73,18 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
 
     public void onUpdate(Canvas canvas) {
         canvas.drawColor(backgroundColor);
+        performance.draw(canvas);
         boolean isPassed = wallsGenerator.draw(canvas, speed);
         if (isPassed) {
             speed += 0.01;
             score += 1;
         }
-
         Rect position = balloon.getPosition();
+        int coinCollected = wallsGenerator.coinCollisionDetection(position);
+        if (coinCollected > 0) {
+            score += coinCollected * 2;
+        }
+
         canvas.drawRect(position, debugPaint);
         Wall collision = wallsGenerator.wallCollisionDetection(position);
         if (collision != null) {
@@ -82,6 +92,7 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
         }
 
         balloon.draw(canvas);
+        canvas.drawText("Score: " + score, 100, 300, paint);
     }
 
     public void play() {
