@@ -2,12 +2,20 @@ package org.ranobe.hotairballoon;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import org.ranobe.hotairballoon.utils.PreferenceUtils;
 import org.ranobe.hotairballoon.views.GameView;
@@ -26,18 +34,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+        MobileAds.initialize(this, initializationStatus -> {});
+
+        AdView adView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
         gameView = findViewById(R.id.game);
         gameView.setListener(this);
-
         highScore = findViewById(R.id.high_score);
 
         findViewById(R.id.play_pause).setOnClickListener(this);
         findViewById(R.id.quit).setOnClickListener(this);
 
-        setScore(PreferenceUtils.getScore(this));
+        setScore();
     }
 
-    private void setScore(int score) {
+    private void setScore() {
+        int score = PreferenceUtils.getScore(this);
         if (score < 1) return;
         highScore.setText(String.format(Locale.getDefault(), "HI-SCORE\n%d", score));
         highScore.setVisibility(View.VISIBLE);
@@ -75,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void died(int score) {
         findViewById(R.id.title).setVisibility(View.VISIBLE);
         PreferenceUtils.storeScore(this, score);
-        setScore(score);
+        setScore();
         Toast.makeText(getApplicationContext(), "Game Over", Toast.LENGTH_SHORT).show();
         isPlaying = false;
         gameView.stop();

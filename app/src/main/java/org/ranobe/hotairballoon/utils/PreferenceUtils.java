@@ -21,6 +21,8 @@ public class PreferenceUtils {
     }
 
     public static void storeScore(Context context, int score) {
+        int old = PreferenceUtils.getScore(context);
+        if (score <= old) return;
         getEditor(context).putInt(PREF_HIGH_SCORE, score).apply();
     }
 

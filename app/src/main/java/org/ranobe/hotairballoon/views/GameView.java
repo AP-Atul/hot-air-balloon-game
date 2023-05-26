@@ -51,6 +51,8 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
         balloon.setInitialPosition(getWidth() / 2F, getHeight() - 50);
         backgroundColor = ContextCompat.getColor(context, R.color.background);
 
+        score = 0;
+
         paint = new Paint();
         paint.setColor(Color.GRAY);
         paint.setStyle(Paint.Style.FILL);
@@ -97,6 +99,7 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
     }
 
     public void play() {
+        score = 0;
         setOnTouchListener(this);
         wallsGenerator.setMakeWalls(true);
 
