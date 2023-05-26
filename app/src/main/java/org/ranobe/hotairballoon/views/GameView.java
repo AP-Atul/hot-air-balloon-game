@@ -14,6 +14,7 @@ import android.view.View;
 
 import androidx.core.content.ContextCompat;
 
+import org.ranobe.hotairballoon.C;
 import org.ranobe.hotairballoon.R;
 import org.ranobe.hotairballoon.entity.Balloon;
 import org.ranobe.hotairballoon.entity.Performance;
@@ -53,7 +54,7 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
         paint = new Paint();
         paint.setColor(Color.GRAY);
         paint.setStyle(Paint.Style.FILL);
-        paint.setTextSize(50);
+        paint.setTextSize(30);
         paint.setAntiAlias(true);
 
         debugPaint = new Paint();
@@ -73,7 +74,7 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
 
     public void onUpdate(Canvas canvas) {
         canvas.drawColor(backgroundColor);
-        performance.draw(canvas);
+        if(C.DEBUG_PERF) performance.draw(canvas);
         boolean isPassed = wallsGenerator.draw(canvas, speed);
         if (isPassed) {
             speed += 0.01;
@@ -85,14 +86,14 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
             score += coinCollected * 2;
         }
 
-        canvas.drawRect(position, debugPaint);
+        if(C.DEBUG_LINE) canvas.drawRect(position, debugPaint);
         Wall collision = wallsGenerator.wallCollisionDetection(position);
         if (collision != null) {
-            new Handler(Looper.getMainLooper()).post(() -> listener.died());
+            new Handler(Looper.getMainLooper()).post(() -> listener.died(score));
         }
 
         balloon.draw(canvas);
-        canvas.drawText("Score: " + score, 100, 300, paint);
+        canvas.drawText("Score " + score, 10, 50, paint);
     }
 
     public void play() {
@@ -158,6 +159,6 @@ public class GameView extends SurfaceView implements View.OnTouchListener {
     }
 
     public interface GameListener {
-        void died();
+        void died(int score);
     }
 }

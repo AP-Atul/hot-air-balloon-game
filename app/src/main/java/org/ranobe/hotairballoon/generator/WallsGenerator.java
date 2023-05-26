@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import org.ranobe.hotairballoon.C;
 import org.ranobe.hotairballoon.R;
 import org.ranobe.hotairballoon.data.DrawerData;
 import org.ranobe.hotairballoon.entity.Coin;
@@ -37,18 +38,18 @@ public class WallsGenerator extends DrawerData {
         wallBitmaps = new ArrayList<>();
 
         List<Integer> bitmaps = new ArrayList<Integer>() {{
-            add(R.drawable.ic_wall_big);
-            add(R.drawable.ic_wall_big);
+            add(R.drawable.small_wall);
+            add(R.drawable.big_wall);
         }};
         for(int resource: bitmaps) {
             wallBitmaps.add(ImageUtils.getVectorBitmap(context, resource));
         }
 
-        coinBitmap = ImageUtils.getVectorBitmap(context, R.drawable.ic_coin);
+        coinBitmap = ImageUtils.getVectorBitmap(context, R.drawable.coin);
     }
 
     public Bitmap getRandomBitmap() {
-        int random = (int) MathUtils.getRandom(0, 1);
+        int random = (int) MathUtils.getRandom(0, 2);
         return wallBitmaps.get(random);
     }
 
@@ -99,7 +100,7 @@ public class WallsGenerator extends DrawerData {
         for (Wall wall : new ArrayList<>(walls)) {
             Rect position = wall.next(speed, canvas);
             if (position != null) {
-                canvas.drawRect(position, debugPaint);
+                if (C.DEBUG_LINE) canvas.drawRect(position, debugPaint);
                 canvas.drawBitmap(wall.wallBitmap, position.left, position.top, paint(0));
             }
             if (wall.y > canvas.getHeight()) {
@@ -111,7 +112,7 @@ public class WallsGenerator extends DrawerData {
         for(Coin coin: new ArrayList<>(coins)) {
             Rect position = coin.next(speed, canvas);
             if (position != null) {
-                canvas.drawRect(position, debugPaint);
+                if (C.DEBUG_LINE) canvas.drawRect(position, debugPaint);
                 coin.draw(canvas);
             }
             if (coin.y > canvas.getHeight()) {

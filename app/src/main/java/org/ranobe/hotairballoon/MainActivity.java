@@ -4,14 +4,19 @@ package org.ranobe.hotairballoon;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.ranobe.hotairballoon.utils.PreferenceUtils;
 import org.ranobe.hotairballoon.views.GameView;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, GameView.GameListener {
 
+    private TextView highScore;
     private GameView gameView;
     private boolean isPlaying = false;
 
@@ -24,8 +29,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gameView = findViewById(R.id.game);
         gameView.setListener(this);
 
+        highScore = findViewById(R.id.high_score);
+
         findViewById(R.id.play_pause).setOnClickListener(this);
         findViewById(R.id.quit).setOnClickListener(this);
+
+        setScore(PreferenceUtils.getScore(this));
+    }
+
+    private void setScore(int score) {
+        if (score < 1) return;
+        highScore.setText(String.format(Locale.getDefault(), "HI-SCORE\n%d", score));
+        highScore.setVisibility(View.VISIBLE);
+        highScore.setTextColor(getColor(R.color.gray_text));
     }
 
     @Override
@@ -56,8 +72,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void died() {
-        Toast.makeText(getApplicationContext(), "Game Over", Toast.LENGTH_LONG).show();
+    public void died(int score) {
+        findViewById(R.id.title).setVisibility(View.VISIBLE);
+        PreferenceUtils.storeScore(this, score);
+        setScore(score);
+        Toast.makeText(getApplicationContext(), "Game Over", Toast.LENGTH_SHORT).show();
         isPlaying = false;
         gameView.stop();
         gameView.setVisibility(View.INVISIBLE);

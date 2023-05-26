@@ -18,7 +18,7 @@ public class Balloon {
     public float y;
 
     public Balloon(Context context) {
-        balloonBitmap = ImageUtils.getVectorBitmap(context, R.drawable.ic_balloon);
+        balloonBitmap = ImageUtils.getVectorBitmap(context, R.drawable.balloon);
         paint = new Paint();
         paint.setColor(Color.GRAY);
         paint.setStyle(Paint.Style.FILL);

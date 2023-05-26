@@ -4,6 +4,7 @@
     <string name="play">Play</string>
     <string name="quit">Quit</string>
     <string name="hot_air_balloon">Hot air balloon</string>
+    <string name="game_over">GAME\nOVER</string>
 
 
 </resources>
