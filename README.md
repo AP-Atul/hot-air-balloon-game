@@ -5,6 +5,6 @@ It is a simple clone of Google Play Store's game.
 
 - Made with Android Studio
 - Used Canvas APIs
-- No external dependencies (except admob, sorry)
+- No external dependencies
 - App size <1MB
 
