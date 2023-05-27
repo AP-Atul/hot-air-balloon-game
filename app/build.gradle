@@ -18,9 +18,6 @@ android {
         versionName "0.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        resValue "string", "ADMOB_APP_ID", properties.getProperty("ADMOB_APP_ID")
-        resValue "string", "ADMOB_AD_UNIT_ID", properties.getProperty("ADMOB_AD_UNIT_ID")
     }
 
     buildTypes {
@@ -38,6 +35,5 @@ android {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.gms:play-services-ads:22.1.0'
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 }

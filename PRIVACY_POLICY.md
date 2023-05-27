@@ -16,12 +16,6 @@ We do not collect or store any personal data. The app does not request any permi
 default available permissions on your device. All information within the app is self-contained, and
 no external services are utilized. No personally identifiable data is transmitted outside the app.
 
-## Advertising
-
-The app includes advertisements that adhere to AdMob policies. The content shown in ads is not
-controlled by the developer. If you encounter any issues with the ads, please contact AdMob
-services.
-
 ## Types of Data Collected
 
 We do not collect any personally identifiable information while you use the app. Your privacy is
